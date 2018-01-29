@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Auto fil</title>
+
+
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+        .autofill_main div {
+            float: left;
+            margin-right: 0.5px;
+        }
+        /* simple */
+        .flip-container {
+            -webkit-perspective: 1000;
+            -moz-perspective: 1000;
+            -ms-perspective: 1000;
+            perspective: 1000;
+            -ms-transform: perspective(1000px);
+            -moz-transform: perspective(1000px);
+            -moz-transform-style: preserve-3d;
+            -ms-transform-style: preserve-3d;
+        }
+
+
+
+        /* START: Accommodating for IE */
+        .autofill_main:hover .back, .autofill_main.hover .back {
+            -webkit-transform: rotateY(0deg);
+            -moz-transform: rotateY(0deg);
+            -o-transform: rotateY(0deg);
+            -ms-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+        }
+
+        .autofill_main:hover .front, .autofill_main.hover .front {
+            -webkit-transform: rotateY(180deg);
+            -moz-transform: rotateY(180deg);
+            -o-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+
+        /* END: Accommodating for IE */
+
+        .flip-container, .front, .back {
+            /*width: 320px;
+            height: 427px;*/
+        }
+
+        .flipper {
+            -webkit-transition: 0.6s;
+            -webkit-transform-style: preserve-3d;
+            -ms-transition: 0.6s;
+            -moz-transition: 0.6s;
+            -moz-transform: perspective(1000px);
+            -moz-transform-style: preserve-3d;
+            -ms-transform-style: preserve-3d;
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .front, .back {
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transition: 0.6s;
+            -webkit-transform-style: preserve-3d;
+            -webkit-transform: rotateY(0deg);
+            -moz-transition: 0.6s;
+            -moz-transform-style: preserve-3d;
+            -moz-transform: rotateY(0deg);
+            -o-transition: 0.6s;
+            -o-transform-style: preserve-3d;
+            -o-transform: rotateY(0deg);
+            -ms-transition: 0.6s;
+            -ms-transform-style: preserve-3d;
+            -ms-transform: rotateY(0deg);
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .front {
+            -webkit-transform: rotateY(0deg);
+            -ms-transform: rotateY(0deg);
+            z-index: 2;
+        }
+
+        .back {
+            -webkit-transform: rotateY(-180deg);
+            -moz-transform: rotateY(-180deg);
+            -o-transform: rotateY(-180deg);
+            -ms-transform: rotateY(-180deg);
+            transform: rotateY(-180deg);
+        }
+
+        .nextflip {
+            -webkit-transform: rotateY(180deg);
+            -moz-transform: rotateY(180deg);
+            -o-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+
+        .backflip {
+            -webkit-transform: rotateY(0deg);
+            -moz-transform: rotateY(0deg);
+            -o-transform: rotateY(0deg);
+            -ms-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+        }
+    </style>
+
+
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+    <!-- <div class="flip-container">
+        <div class="front">fffff</div>
+        <div class="back">ssss</div>
+
+    </div>-->
+    <div class="autofill_main">
+
+        <img id="Img1" src="slide.jpg" alt="image" />
+        <img id="Img2" src="slide1.jpg" alt="image" />
+        <img id="Img3" src="slide2.jpg" alt="image" />
+        <img id="Img4" src="slide3.jpg" alt="image" />
+
+    </div>
+    <button type="button" value="Next" id="btnprv">prv</button>
+    <button type="button" value="Next" id="btnnext">next</button>
+
+
+    <script>
+        $(document).ready(function () {
+
+            // get slider imags list from div 
+            var slideList = [];
+            $(".autofill_main").each(function () {
+                var sImage = '';
+
+                $(this).find("img").each(function () {
+                    var $input = $(this);
+                    sImage = $input.attr("src");
+                    slideList.push(sImage);
+
+                });
+
+            });
+            console.log(slideList);
+            var imgIndex = 0;
+            var zeeroFront = imgIndex;
+            var oneBack = imgIndex + 1;
+
+            console.log(slideList[zeeroFront]);
+            console.log(slideList.length)
+
+            $('#btnnext').click(function () {
+
+                if (imgIndex == slideList.length - 1) {
+                    imgIndex = -1;
+                }
+                ++imgIndex;
+
+                zeeroFront = imgIndex;
+                oneBack = ((zeeroFront + 1) > slideList.length - 1) ? 0 : zeeroFront + 1;
+
+                console.log("oneBack -->" + oneBack + "<--" + slideList[oneBack]);
+                console.log("zeeroFront -->" + zeeroFront + "<--" + slideList[zeeroFront]);
+
+                $('.autofill_main').addClass('hover');
+                $('.front').css({
+                    "background-image": "url('" + slideList[zeeroFront] + "')"
+                });
+
+                setTimeout(function () {
+                    $('.back').css({
+                        "background-image": "url('" + slideList[oneBack] + "')"
+                    })
+
+                    $('.autofill_main').removeClass('hover');
+                }, 200);
+
+
+                console.log("imgIndex" + imgIndex);
+                console.log("zeeroFront" + zeeroFront);
+                console.log("oneBack" + oneBack);
+
+
+            });
+
+
+            $('#btnprv').click(function () {
+
+
+                if (imgIndex == 0 || imgIndex == -1) {
+                    imgIndex = slideList.length;
+                }
+
+
+                --imgIndex;
+                zeeroFront = imgIndex;
+                oneBack = (zeeroFront - 1 < 0 ? (slideList.length - 1) : zeeroFront - 1);
+
+                console.log("oneBack -->" + oneBack + "<--" + slideList[oneBack]);
+                console.log("zeeroFront -->" + zeeroFront + "<--" + slideList[zeeroFront]);
+
+
+                $('.autofill_main').addClass('hover');
+                $('.front').css({
+                    "background-image": "url('" + slideList[zeeroFront] + "')"
+                });
+
+
+                setTimeout(function () {
+                    $('.back').css({
+                        "background-image": "url('" + slideList[oneBack] + "')"
+                    })
+
+                    $('.autofill_main').removeClass('hover');
+                }, 200);
+
+
+
+            });
+
+
+
+
+            var elWidth = $('.autofill_main img').width();
+            var elHeight = $('.autofill_main img').height();
+            var sliceQ = 10;
+
+
+            $(document).ready( function () {
+
+             
+                    var startTo = (elWidth / sliceQ);
+                    //console.log(event.keyCode);
+
+                    for (var i = 0; i < sliceQ; i++) {
+                        var curntPo = (startTo * i);
+
+                        var frontdivid = "frontslice" + i;
+                        var backdivid = "backslice" + i;
+
+                        $(".autofill_main").append("<div class='flip-container'>\
+                            <div class='front' id='" + frontdivid + "'></div>\
+                            <div class='back' id='" + backdivid + "'></div>\
+                            </div>");
+
+                        $("#" + frontdivid).attr("style", "height:" + elHeight + "px; width:" + startTo + "px;\
+                              background-image:url('" + slideList[zeeroFront] + "'); background-repeat:no-repeat;\
+                              background-position: -" + curntPo + "px; 0px;");
+
+                        $("#" + backdivid).attr("style", "height:" + elHeight + "px; width:" + startTo + "px;\
+                              background-image:url('" + slideList[oneBack] + "'); background-repeat:no-repeat;\
+                              background-position: -" + curntPo + "px; 0px;");
+
+                        $(".flip-container").attr("style", "height:" + elHeight + "px; width:" + startTo + "px;");
+
+                    }
+                    $("img").remove();
+             
+
+
+
+            });
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+    </script>
+
+
+</body>
+</html>
